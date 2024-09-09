@@ -1,8 +1,8 @@
-grammar Forge;
+grammar ForgeParser;
 
-import ForgeLexer;
+options { tokenVocab=ForgeLexer; }
 
-// Parser rules
+
 alloyModule:  importDecl* paragraph* 
             | evalDecl*;
 

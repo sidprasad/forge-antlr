@@ -101,7 +101,6 @@ OPTION_TOK: 'option';
 COMMA_TOK: ',';
 SLASH_TOK: '/';
 WS: [ \t\r\n]+ -> skip;
-COMMENT:  '//' ~[\r\n]* -> skip
-        | '--' ~[\r\n]* -> skip
-        | '/*' .*? '*/' -> skip
-        ;
+CCOMMENT:  '//' ~[\r\n]* -> skip;
+COMMENT: '--' ~[\r\n]* -> skip;
+MULTCOMMENT : '/*' .*? '*/' -> skip;
