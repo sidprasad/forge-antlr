@@ -4,5 +4,14 @@ ANTLR4 grammar for [Forge](https://forge-fm.org/)
 
 
 ```
-java -jar antlr-4.9.2-complete.jar -Dlanguage=TypeScript ForgeLexer.g4 ForgeParser.g4
+antlr -Dlanguage=JavaScript ForgeLexer.g4 ForgeParser.g4
+
+```
+
+
+
+```
+import * as antlr4 from 'antlr4';
+import { MyGrammarLexer } from './MyGrammarLexer';
+import { MyGrammarParser } from './MyGrammarParser';
 ```
