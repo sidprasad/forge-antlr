@@ -353,8 +353,53 @@ export class ForgeListenerImpl implements ForgeListener {
     /**
      * Exit a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
      * @param ctx the parse tree
+     * 
      */
-    exitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+    exitQuantifiedPropertyDecl? (ctx: QuantifiedPropertyDeclContext) {
+                // ALWAYS OF THE FORM pred => prop
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+
+        const disj : boolean = ctx.DISJ_TOK() ? true : false;
+        
+        // First get if necessary or sufficient
+        const rel = ctx.SUFFICIENT_TOK() ? "sufficient"
+                    : ctx.NECESSARY_TOK() ? "necessary"
+                    : "unknown";
+        
+        // Assert that the relation is necessary or sufficient
+        if (rel === "unknown") {
+            throw new Error("Property relation must be either necessary or sufficient.");
+        }
+
+        let predIndex = (rel === "sufficient") ? 0 : 1;
+        let propIndex = (rel === "sufficient") ? 1 : 0;
+
+        const predName = ctx.name(predIndex).text;
+        const propName = ctx.name(propIndex).text;
+
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+
+        // TODO: Improve this, which is not ideal
+        const quantDecls = ctx.quantDeclList();
+        const quantDeclsBlock : Block | undefined = quantDecls ? getLocationOnlyBlock(quantDecls) : undefined;
+
+        let qa = new QuantifiedAssertionTest(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            predName,
+            propName,
+            rel,
+            disj,
+            quantDeclsBlock,
+            testBounds,
+            testScope
+        );
+        this._quantifiedAssertions.push(qa);
+    }
 
 
 
@@ -398,8 +443,34 @@ export class ForgeListenerImpl implements ForgeListener {
     /**
      * Exit a parse tree produced by `ForgeParser.exampleDecl`.
      * @param ctx the parse tree
+     * 
+     * 
+     *      * TODO: THIS IS HARD, WE NEED TO PARSE THE EXPRLIST (WHICH WILL ALWAYS BE ALL)
+     * 
      */
-    exitExampleDecl?: (ctx: ExampleDeclContext) => void;
+    exitExampleDecl? (ctx: ExampleDeclContext) {
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+
+        const exampleName = ctx.name().text;
+
+        const testExpr = ctx.expr();
+        const testExprBlock : Block = getLocationOnlyBlock(testExpr);
+
+        const bounds = ctx.bounds();
+        const boundsBlock : Block = getLocationOnlyBlock(bounds);
+
+        let e = new Example(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            exampleName,
+            testExprBlock,
+            boundsBlock
+        );
+        this._examples.push(e);
+    }
 
   
 

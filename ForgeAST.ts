@@ -107,9 +107,6 @@ class Test extends ASTNode {
 }
 class AssertionTest extends ASTNode {
 
-
-
-
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -124,8 +121,45 @@ class AssertionTest extends ASTNode {
 		super(startRow, startColumn, endRow, endColumn);
 	}
 }
-class QuantifiedAssertionTest extends ASTNode {}
-class Example extends ASTNode {}
+class QuantifiedAssertionTest extends ASTNode {
+
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public pred: string,
+		public prop: string,
+		public check : string,
+		public disj? : boolean,
+		public quantDecls? : Block,
+		public bounds? : string,
+		public scope? : string
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+
+
+
+}
+
+
+
+class Example extends ASTNode {
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public name: string,
+		public testExpr : Block,
+		public bounds : Block,
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+
+
+}
 class Function extends ASTNode {}
 class SatisfiabilityAssertionTest extends ASTNode {
 
