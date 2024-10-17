@@ -88,8 +88,8 @@ import { BindRHSUnionContext } from "./ForgeParser";
 import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
-import { ASTNode, Sig, Predicate, Test, Block } from './ForgeAST';
-import { get } from 'http';
+import { ASTNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest } from './ForgeAST';
+
 
 /*
     We don't really need a whole AST right now right?
@@ -122,6 +122,9 @@ export class ForgeListenerImpl implements ForgeListener {
     private _sigs : Sig[] = [];
     private _predicates : Predicate[] = [];
     private _tests : Test[] = [];
+    private _assertions : AssertionTest[] = [];
+    private _examples : Example[] = [];
+    private _quantifiedAssertions : QuantifiedAssertionTest[] = [];
 
     public get sigs() : Sig[] {
         return this._sigs;
@@ -134,6 +137,18 @@ export class ForgeListenerImpl implements ForgeListener {
 
     public get tests() : Test[] {
         return this._tests;
+    }
+
+    public get assertions() : AssertionTest[] {
+        return this._assertions;
+    }
+
+    public get examples() : Example[] {
+        return this._examples;
+    }
+
+    public get quantifiedAssertions() : QuantifiedAssertionTest[] {
+        return this._quantifiedAssertions;
     }
 
 

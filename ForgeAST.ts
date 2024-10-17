@@ -56,20 +56,7 @@ class Formula extends ASTNode {
 		}
 }
 
-// We don't really care about inst contents for now.
-class Inst extends ASTNode {
 
-	constructor(
-		startRow: number,
-		startColumn: number,
-		endRow: number,
-		endColumn: number,
-		public inst: string
-		) {
-			super(startRow, startColumn, endRow, endColumn);
-		}
-
-}
 
 // We don't really care about expr contents for now.
 class Expr extends ASTNode {
@@ -79,19 +66,6 @@ class Expr extends ASTNode {
 		endRow: number,
 		endColumn: number,
 		public expr: string
-		) {
-			super(startRow, startColumn, endRow, endColumn);
-		}
-}
-
-// We don't really care about Command contents for now.
-class Command extends ASTNode {
-	constructor(
-		startRow: number,
-		startColumn: number,
-		endRow: number,
-		endColumn: number,
-		public command: string
 		) {
 			super(startRow, startColumn, endRow, endColumn);
 		}
@@ -112,9 +86,16 @@ class Predicate extends ASTNode {
         }
 }
 
-// TODO: Implement this class
-class Test extends ASTNode {
+// TODO: Implement these
+class Test extends ASTNode {}
+class AssertionTest extends ASTNode {}
+class QuantifiedAssertionTest extends ASTNode {}
+class Example extends ASTNode {}
+class Function extends ASTNode {}
 
-}
-
-export { Sig, Inst, Command, Predicate, Test, Block}
+export {
+		Block,
+		Sig, Predicate, Function, 
+		Test, AssertionTest, QuantifiedAssertionTest, Example, 
+		Formula, Expr // THese ones are not used for now
+};
