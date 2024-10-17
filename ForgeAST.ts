@@ -86,16 +86,66 @@ class Predicate extends ASTNode {
         }
 }
 
+
 // TODO: Implement these
-class Test extends ASTNode {}
-class AssertionTest extends ASTNode {}
+class Test extends ASTNode {
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public name: string,
+
+		public check : string,
+		public body?: Block,
+		public bounds? : string,
+		public scope? : string
+
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+}
+class AssertionTest extends ASTNode {
+
+
+
+
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public pred: string,
+		public prop: string,
+		public check : string,
+		public bounds? : string,
+		public scope? : string
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+}
 class QuantifiedAssertionTest extends ASTNode {}
 class Example extends ASTNode {}
 class Function extends ASTNode {}
+class SatisfiabilityAssertionTest extends ASTNode {
+
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public pred: string,
+		public check : string,
+		public bounds? : string,
+		public scope? : string
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+}
 
 export {
 		Block,
 		Sig, Predicate, Function, 
-		Test, AssertionTest, QuantifiedAssertionTest, Example, 
+		Test, AssertionTest, QuantifiedAssertionTest, Example, SatisfiabilityAssertionTest,
 		Formula, Expr // THese ones are not used for now
 };

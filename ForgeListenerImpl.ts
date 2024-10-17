@@ -88,7 +88,7 @@ import { BindRHSUnionContext } from "./ForgeParser";
 import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
-import { ASTNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest } from './ForgeAST';
+import { ASTNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest } from './ForgeAST';
 
 
 /*
@@ -101,21 +101,35 @@ import { ASTNode, Sig, Predicate, Test, Block, AssertionTest, Example, Quantifie
 
 */
 
+
+function getRandomName() : string {
+    return Math.random().toString(36).substring(7);
+}
+
+
+function getLocations(ctx : ParserRuleContext) : any {
+    const startLine = ctx.start.line;
+    const startColumn = ctx.start.charPositionInLine;
+    const endLine = ctx.stop ? ctx.stop.line : -1;
+    const endColumn =  ctx.stop ? ctx.stop.charPositionInLine : 0;
+    return {startLine, startColumn, endLine, endColumn};
+}
+
 /**
  * 
  * @param ctx Some parser rule context
  * @returns A block with only the locations of the text in the ctx.
  */
 function getLocationOnlyBlock(ctx : ParserRuleContext) : Block {
-    const startLine = ctx.start.line;
-    const startColumn = ctx.start.charPositionInLine;
-    const endLine = ctx.stop ? ctx.stop.line : -1;
-    const endColumn =  ctx.stop ? ctx.stop.charPositionInLine : 0;
+    const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
     const block = new Block(startLine, startColumn, endLine, endColumn, []);
     return block;
 }
 
+/*
+    TODO: Rename this to a listener for TOADUS PONENS
 
+*/
 export class ForgeListenerImpl implements ForgeListener {
 
     
@@ -125,6 +139,7 @@ export class ForgeListenerImpl implements ForgeListener {
     private _assertions : AssertionTest[] = [];
     private _examples : Example[] = [];
     private _quantifiedAssertions : QuantifiedAssertionTest[] = [];
+    private _satisfiabilityAssertions : SatisfiabilityAssertionTest[] = [];
 
     public get sigs() : Sig[] {
         return this._sigs;
@@ -151,16 +166,17 @@ export class ForgeListenerImpl implements ForgeListener {
         return this._quantifiedAssertions;
     }
 
+    public get satisfiabilityAssertions() : SatisfiabilityAssertionTest[] {
+        return this._satisfiabilityAssertions;
+    }
+
 
     /**
      * Exit a parse tree produced by `ForgeParser.sigDecl`.
      * @param ctx the parse tree
      */
     exitSigDecl? (ctx: SigDeclContext) {
-        const startLine = ctx.start.line;
-        const startColumn = ctx.start.charPositionInLine;
-        const endLine = ctx.stop ? ctx.stop.line : -1;
-        const endColumn =  ctx.stop ? ctx.stop.charPositionInLine : 0;
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
 
         // Could have definied multiple names here.
         const sigNames = this.getAllNames(ctx.nameList());
@@ -189,26 +205,17 @@ export class ForgeListenerImpl implements ForgeListener {
      */
     exitPredDecl? (ctx: PredDeclContext) {
 
-        const startLine = ctx.start.line;
-        const startColumn = ctx.start.charPositionInLine;
-        const endLine = ctx.stop ? ctx.stop.line : -1;
-        const endColumn =  ctx.stop ? ctx.stop.charPositionInLine : 0;
-
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
         const predName = ctx.name().text;
 
-        // We don't care about the pred type for now (wheat or not.)
-        // In fact, this should maybe be removed from FORGE.
+        // We don't care about the pred type for now (wheat or not.) In fact, this should maybe be removed from FORGE.
+        // There is also the PRED qualName that I don't know what to do with here.
 
-        // There is also the PRED qualName that we don't really have for now.
-
-        // Get the pred arguments
-        // const predArgs = ctx.paraDecls() ? {} : this.getNameTypePairs(ctx.paraDecls());
         // Ideally, predArgs should look something like this.
         //const predArgs : Record<string, string> = {}; // TODO: This needs to be fixed!!
         const paraDecls = ctx.paraDecls();
         const predArgsBlock : Block | undefined = paraDecls ? getLocationOnlyBlock(paraDecls) : undefined; 
         
-
         // Get the pred body (block)
         const predBody = ctx.block();
         // Block start, block end.
@@ -239,26 +246,109 @@ export class ForgeListenerImpl implements ForgeListener {
      * Exit a parse tree produced by `ForgeParser.testDecl`.
      * @param ctx the parse tree
      */
-    exitTestDecl?: (ctx: TestDeclContext) => void;
-   
-    /**
-     * Exit a parse tree produced by `ForgeParser.testBlock`.
-     * @param ctx the parse tree
-     */
-    exitTestBlock?: (ctx: TestBlockContext) => void;
+    exitTestDecl? (ctx: TestDeclContext){
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+        const testName = ctx.name()?.IDENTIFIER_TOK().text || getRandomName();
+        // IGNORE qualName (the alternative to block) for now, unsure what it is. TODO!!
+        const testBlock = ctx.block();
+        const testBody : Block | undefined = testBlock ? getLocationOnlyBlock(testBlock) : undefined;
+
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+        
+
+        const check = ctx.SAT_TOK() ? "sat" : 
+                        ctx.UNSAT_TOK() ? "unsat" :
+                        ctx.THEOREM_TOK() ? "theorem" :
+                        ctx.FORGE_ERROR_TOK() ? "forge_error" : "unknown";
+
+        let t = new Test(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            testName,
+            check,
+            testBody,
+            testBounds,
+            testScope
+        );
+        this._tests.push(t);
+    }
 
     
     /**
      * Exit a parse tree produced by `ForgeParser.satisfiabilityDecl`.
      * @param ctx the parse tree
      */
-    exitSatisfiabilityDecl?: (ctx: SatisfiabilityDeclContext) => void;
+    exitSatisfiabilityDecl? (ctx: SatisfiabilityDeclContext) {
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+
+        const predName = ctx.name().text;
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+        
+        // Hmm, why did we avoid theorem here I wonder
+        const check = ctx.SAT_TOK() ? "sat" : 
+                        ctx.UNSAT_TOK() ? "unsat" :
+                        ctx.FORGE_ERROR_TOK() ? "forge_error" : "unknown";
+        
+        const st = new SatisfiabilityAssertionTest(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            predName,
+            check,
+            testBounds,
+            testScope
+        );
+        this._satisfiabilityAssertions.push(st);
+    }
 
     /**
      * Exit a parse tree produced by `ForgeParser.propertyDecl`.
      * @param ctx the parse tree
      */
-    exitPropertyDecl?: (ctx: PropertyDeclContext) => void;
+    exitPropertyDecl? (ctx: PropertyDeclContext) {
+
+        // ALWAYS OF THE FORM pred => prop
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+        
+        // First get if necessary or sufficient
+        const rel = ctx.SUFFICIENT_TOK() ? "sufficient"
+                    : ctx.NECESSARY_TOK() ? "necessary"
+                    : "unknown";
+        
+        // Assert that the relation is necessary or sufficient
+        if (rel === "unknown") {
+            throw new Error("Property relation must be either necessary or sufficient.");
+        }
+
+        let predIndex = (rel === "sufficient") ? 0 : 1;
+        let propIndex = (rel === "sufficient") ? 1 : 0;
+
+        const predName = ctx.name(predIndex).text;
+        const propName = ctx.name(propIndex).text;
+
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+
+        const at = new AssertionTest(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            predName,
+            propName,
+            rel,
+            testBounds,
+            testScope
+        );
+        this._assertions.push(at);
+    }
 
     /**
      * Exit a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
