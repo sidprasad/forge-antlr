@@ -242,11 +242,11 @@ export class ForgeParser extends Parser {
 		"'for'", "'but'", "'exactly'", "'none'", "'univ'", "'iden'", "'-'", "'is'", 
 		"'sat'", "'unsat'", "'theorem'", "'forge_error'", "'test'", "'expect'", 
 		"'suite'", "'|'", "'all'", "'sufficient'", "'necessary'", "'let'", "'bind'", 
-		"'or'", "'xor'", "'iff'", "'imp'", "'else'", "'and'", "'until'", "'release'", 
-		"'since'", "'triggered'", "'neg'", "'always'", "'eventually'", "'after'", 
-		"'before'", "'once'", "'historically'", "'#'", "'pplus'", "'amp'", "'subt'", 
-		"'supt'", "'''", "'~'", "'exp'", "'*'", "'@'", "'`'", "'this'", "'sexpr'", 
-		"'inst'", "'eval'", "'example'", "'->'", "'='", "'<'", "'>'", "'<='", 
+		undefined, "'xor'", undefined, undefined, "'else'", undefined, "'until'", 
+		"'release'", "'since'", "'triggered'", undefined, "'always'", "'eventually'", 
+		"'after'", "'before'", "'once'", "'historically'", "'#'", "'++'", "'&'", 
+		"'<:'", "':>'", "'''", "'~'", "'^'", "'*'", "'@'", "'`'", "'this'", "'sexpr'", 
+		"'inst'", "'eval'", "'example'", "'->'", "'='", "'<'", "'>'", undefined, 
 		"'>='", "'ni'", "'no'", "'sum'", "'Int'", "'option'", "','", "'/'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
