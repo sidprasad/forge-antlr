@@ -105,7 +105,7 @@ class Predicate extends ASTNode {
         endRow: number,
         endColumn: number,
         public name: string,
-        public params: Record<string, string>, // This is a map of parameter names to their types
+        public params?: Block, // FOr now, just a location block. We should change this as we get as things get more sophisticated.
         public body?: Block
         ) {
             super(startRow, startColumn, endRow, endColumn);
