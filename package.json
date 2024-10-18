@@ -1,16 +1,16 @@
 {
-  "name": "forge-antlr",
+  "name": "forge-toadus-parser",
   "version": "1.0.0",
-  "description": "ANTLR4 grammar for Forge",
+  "description": "Typescript parser/listener for Toadus Ponens/Forge",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "antlr4ts": "antlr4ts -visitor ForgeLexer.g4 Forge.g4",
+    "antlr4ts": "cd src && antlr4ts -visitor ForgeLexer.g4 Forge.g4 && cd ..",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Siddhartha Prasad",
+  "license": "MIT",
   "dependencies": {
     "@types/node": "^16.9.1",
     "antlr4ts": "^0.5.0-alpha.3"

@@ -1,4 +1,4 @@
-import { ForgeUtil } from "../forgeUtil";
+import { ForgeUtil } from "../src";
 import * as fs from 'fs';
 import * as path from 'path';
 

@@ -38,10 +38,6 @@ export class ForgeUtil {
         this.walker.walk(this.forgeListener, tree);
     }
 
-	
-
-
-	// Get Sigs
 	getSigs() {
 		return this.forgeListener.sigs;
 	}
