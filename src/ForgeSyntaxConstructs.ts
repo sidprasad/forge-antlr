@@ -4,7 +4,7 @@
 
 
 // Base class for all AST nodes
-export abstract class ASTNode {
+export abstract class SyntaxNode {
 	constructor(
         public startRow: number,
         public startColumn: number,
@@ -13,20 +13,20 @@ export abstract class ASTNode {
     ) {}
 }
 
-class Block extends ASTNode {
+class Block extends SyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
 		endRow: number,
 		endColumn: number,
-		public statements: ASTNode[]
+		public statements: SyntaxNode[]
 	) {
 		super(startRow, startColumn, endRow, endColumn);
 	}
 }
 
 	
-class Sig extends ASTNode {
+class Sig extends SyntaxNode {
     constructor(
 		startRow: number,
         startColumn: number,
@@ -44,7 +44,7 @@ class Sig extends ASTNode {
 
 
 // We don't really care about formula contents for now.
-class Formula extends ASTNode {
+class Formula extends SyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -59,7 +59,7 @@ class Formula extends ASTNode {
 
 
 // We don't really care about expr contents for now.
-class Expr extends ASTNode {
+class Expr extends SyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -72,7 +72,7 @@ class Expr extends ASTNode {
 }
 
 
-class Predicate extends ASTNode {
+class Predicate extends SyntaxNode {
     constructor(
         startRow: number,
         startColumn: number,
@@ -88,7 +88,7 @@ class Predicate extends ASTNode {
 
 
 // TODO: Implement these
-class Test extends ASTNode {
+class Test extends SyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -105,7 +105,7 @@ class Test extends ASTNode {
 		super(startRow, startColumn, endRow, endColumn);
 	}
 }
-class AssertionTest extends ASTNode {
+class AssertionTest extends SyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -121,7 +121,7 @@ class AssertionTest extends ASTNode {
 		super(startRow, startColumn, endRow, endColumn);
 	}
 }
-class QuantifiedAssertionTest extends ASTNode {
+class QuantifiedAssertionTest extends SyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -145,7 +145,7 @@ class QuantifiedAssertionTest extends ASTNode {
 
 
 
-class Example extends ASTNode {
+class Example extends SyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -160,18 +160,31 @@ class Example extends ASTNode {
 
 
 }
-class Function extends ASTNode {}
-class SatisfiabilityAssertionTest extends ASTNode {
+class Function extends SyntaxNode {
 
 	constructor(
 		startRow: number,
 		startColumn: number,
 		endRow: number,
 		endColumn: number,
-		public pred: string,
-		public check : string,
-		public bounds? : string,
-		public scope? : string
+		public name: string,
+		public params?: Block, // FOr now, just a location block. We should change this as we get as things get more sophisticated.
+		public body?: Block
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+
+
+
+}
+class SatisfiabilityAssertionTest extends SyntaxNode {
+
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public name: string
 	) {
 		super(startRow, startColumn, endRow, endColumn);
 	}
@@ -181,5 +194,5 @@ export {
 		Block,
 		Sig, Predicate, Function, 
 		Test, AssertionTest, QuantifiedAssertionTest, Example, SatisfiabilityAssertionTest,
-		Formula, Expr // THese ones are not used for now
+		//Formula, Expr // THese ones are not used for now
 };

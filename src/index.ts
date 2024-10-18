@@ -72,4 +72,7 @@ export class ForgeUtil {
 		return this.forgeListener.examples;
 	}
 
+	getFunctions() {
+		return this.forgeListener.functions;
+	}
 }

@@ -88,7 +88,7 @@ import { BindRHSUnionContext } from "./ForgeParser";
 import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
-import { ASTNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest } from './ForgeAST';
+import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest } from './ForgeSyntaxConstructs';
 
 
 /*
@@ -140,6 +140,7 @@ export class ForgeListenerImpl implements ForgeListener {
     private _examples : Example[] = [];
     private _quantifiedAssertions : QuantifiedAssertionTest[] = [];
     private _satisfiabilityAssertions : SatisfiabilityAssertionTest[] = [];
+    private _functions : Function[] = [];
 
     public get sigs() : Sig[] {
         return this._sigs;
@@ -168,6 +169,10 @@ export class ForgeListenerImpl implements ForgeListener {
 
     public get satisfiabilityAssertions() : SatisfiabilityAssertionTest[] {
         return this._satisfiabilityAssertions;
+    }
+
+    public get functions() : Function[] {
+        return this._functions;
     }
 
 
@@ -220,7 +225,7 @@ export class ForgeListenerImpl implements ForgeListener {
         const predBody = ctx.block();
         // Block start, block end.
         let predBlock = getLocationOnlyBlock(predBody);
-        const predBodyStatements : ASTNode[] = []; // TODO
+        const predBodyStatements : SyntaxNode[] = []; // TODO
 
         let p = new Predicate(
             startLine, 
@@ -240,7 +245,20 @@ export class ForgeListenerImpl implements ForgeListener {
      * Exit a parse tree produced by `ForgeParser.funDecl`.
      * @param ctx the parse tree
      */
-    exitFunDecl?: (ctx: FunDeclContext) => void;
+    exitFunDecl? (ctx: FunDeclContext) {
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+        const funName = ctx.name().text;
+
+        let f = new Function(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            funName
+        );
+        this._functions.push(f);
+    }
 
     /**
      * Exit a parse tree produced by `ForgeParser.testDecl`.
