@@ -59,4 +59,21 @@ export class ForgeUtil {
 	// getFunctions() {
 	// 	return this.forgeListener.functions;
 	// }
+
+	getAssertions() {
+		return this.forgeListener.assertions;
+	}
+
+	getQuantifiedAssertions() {
+		return this.forgeListener.quantifiedAssertions;
+	}
+
+	getSatisfiabilityAssertions() {
+		return this.forgeListener.satisfiabilityAssertions;
+	}
+
+	getExamples() {
+		return this.forgeListener.examples;
+	}
+
 }

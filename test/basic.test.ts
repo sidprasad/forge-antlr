@@ -42,5 +42,24 @@ describe('ForgeUtil', () => {
 
     });
 
+    it (' can extract basic tests.',  () => {
+               // Construct the path to the Forge file relative to the current directory
+        const forgeFilePath = path.join(__dirname, 'examples', 'differenttests.frg');
+        const forgeSpec = fs.readFileSync(forgeFilePath, 'utf8');
+        const forgeUtil = new ForgeUtil(forgeSpec);
+        forgeUtil.processSpec();
+        
+        let tests = forgeUtil.getTests();
+        expect(tests.length).toBe(3);
+
+        let examples = forgeUtil.getExamples();
+        expect(examples.length).toBe(2);
+
+        let assertions = forgeUtil.getAssertions();
+        expect(assertions.length).toBe(2);
+
+        let quantifiedAssertions = forgeUtil.getQuantifiedAssertions();
+        expect(quantifiedAssertions.length).toBe(3);
+    });
 
 });
