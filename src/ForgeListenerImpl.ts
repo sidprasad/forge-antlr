@@ -372,6 +372,11 @@ export class ForgeListenerImpl implements ForgeListener {
             throw new Error("Property relation must be either necessary or sufficient.");
         }
 
+
+        // TODO:!
+        // I THINK THIS IS BUGGY!!
+        // WE AREN"T CAPTURING THE PARAMETERS ON EACH predicate and prop
+
         let predIndex = (rel === "sufficient") ? 0 : 1;
         let propIndex = (rel === "sufficient") ? 1 : 0;
 
