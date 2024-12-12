@@ -383,6 +383,15 @@ export class ForgeListenerImpl implements ForgeListener {
         const predName = ctx.name(predIndex).text;
         const propName = ctx.name(propIndex).text;
 
+        let predArgs = ctx.exprList(predIndex);
+        let predArgsBlock : Block | undefined = predArgs ? getLocationOnlyBlock(predArgs) : undefined;
+
+
+        let propArgs = ctx.exprList(propIndex);
+        let propArgsBlock : Block | undefined = propArgs ? getLocationOnlyBlock(propArgs) : undefined;
+
+
+
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
         const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
 
@@ -401,7 +410,9 @@ export class ForgeListenerImpl implements ForgeListener {
             disj,
             quantDeclsBlock,
             testBounds,
-            testScope
+            testScope,
+            predArgsBlock,
+            propArgsBlock
         );
         this._quantifiedAssertions.push(qa);
     }
