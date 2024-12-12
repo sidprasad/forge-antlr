@@ -186,7 +186,10 @@ class SatisfiabilityAssertionTest extends SyntaxNode {
 		startColumn: number,
 		endRow: number,
 		endColumn: number,
-		public name: string
+		public name: string,
+		public check : string,
+		public bounds? : string,
+		public scope? : string
 	) {
 		super(startRow, startColumn, endRow, endColumn);
 	}
