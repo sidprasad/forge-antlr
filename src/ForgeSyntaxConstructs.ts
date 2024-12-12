@@ -134,7 +134,9 @@ class QuantifiedAssertionTest extends SyntaxNode {
 		public disj? : boolean,
 		public quantDecls? : Block,
 		public bounds? : string,
-		public scope? : string
+		public scope? : string,
+		public predArgs?: Block,
+		public propArgs?: Block
 	) {
 		super(startRow, startColumn, endRow, endColumn);
 	}
