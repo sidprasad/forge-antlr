@@ -52,7 +52,7 @@ test suite for isDirectedTree {
 //// QUANTIFIED ASSERTIONS //////
 assert all r1, r2 : Node | isDirectedTree is sufficient for isDirectedTree
 // Allow multiple quantifications + check scopes
-assert all r : NonNode, r1 : Node | isRoot[r1] is necessary for isDirectedTree for 1 Node, 1 NonNode
+assert all r : NonNode, r1 : Node | isDirectedTree is necessary for isRoot[r1] for 1 Node, 1 NonNode
 // Ensure disj works
 assert all disj r1, r2 : Node | arethesame[r1, r2] is necessary for arethesame[r1, r2]  for 1 Node
 
