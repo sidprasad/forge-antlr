@@ -10,8 +10,8 @@ importDecl: OPEN_TOK qualName (LEFT_SQUARE_TOK qualNameList RIGHT_SQUARE_TOK)? (
       | OPEN_TOK FILE_PATH_TOK (AS_TOK name)?;
 
 paragraph: sigDecl | predDecl | funDecl | assertDecl | cmdDecl | testExpectDecl | sexprDecl
-         | queryDecl | evalRelDecl | optionDecl | instDecl | exampleDecl | propertyDecl
-         | quantifiedPropertyDecl | satisfiabilityDecl | consistencyDecl | testSuiteDecl;
+         | queryDecl | evalRelDecl | optionDecl | instDecl | exampleDecl
+         | propertyDecl | quantifiedPropertyDecl | satisfiabilityDecl | consistencyDecl | testSuiteDecl;
 
 sigDecl: VAR_TOK? ABSTRACT_TOK? mult? SIG_TOK nameList sigExt? LEFT_CURLY_TOK arrowDeclList? RIGHT_CURLY_TOK block?;
 sigExt: EXTENDS_TOK qualName | IN_TOK qualName (PLUS_TOK qualName)*;
@@ -40,14 +40,16 @@ scope: FOR_TOK number (BUT_TOK typescopeList)? | FOR_TOK typescopeList;
 typescope: EXACTLY_TOK? number qualName;
 const: NONE_TOK | UNIV_TOK | IDEN_TOK | MINUS_TOK? number;
 
+// TODO: ERROR: WE ARE PARSING SOME QUANTIFIED PROPERTY DECL AS PROPERTYDECL 
+
 satisfiabilityDecl: ASSERT_TOK expr IS_TOK (SAT_TOK | UNSAT_TOK | FORGE_ERROR_TOK) scope? (FOR_TOK bounds)?;
-propertyDecl: ASSERT_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
 quantifiedPropertyDecl: ASSERT_TOK ALL_TOK DISJ_TOK? quantDeclList BAR_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? scope? (FOR_TOK bounds)?;
+propertyDecl: ASSERT_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
 consistencyDecl: ASSERT_TOK expr IS_TOK (CONSISTENT_TOK | INCONSISTENT_TOK) WITH_TOK name scope? (FOR_TOK bounds)?;
 
 testSuiteDecl: TEST_TOK SUITE_TOK FOR_TOK name LEFT_CURLY_TOK testConstruct* RIGHT_CURLY_TOK;
 
-testConstruct: exampleDecl | testExpectDecl | propertyDecl | quantifiedPropertyDecl | satisfiabilityDecl | consistencyDecl;
+testConstruct: exampleDecl | testExpectDecl |  quantifiedPropertyDecl | propertyDecl | satisfiabilityDecl | consistencyDecl;
 
 arrowOp: (mult | SET_TOK)? ARROW_TOK (mult | SET_TOK)?;
 compareOp: IN_TOK | EQ_TOK | LT_TOK | GT_TOK | LEQ_TOK | GEQ_TOK | IS_TOK | NI_TOK;

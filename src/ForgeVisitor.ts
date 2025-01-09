@@ -27,8 +27,8 @@ import { ScopeContext } from "./ForgeParser";
 import { TypescopeContext } from "./ForgeParser";
 import { ConstContext } from "./ForgeParser";
 import { SatisfiabilityDeclContext } from "./ForgeParser";
-import { PropertyDeclContext } from "./ForgeParser";
 import { QuantifiedPropertyDeclContext } from "./ForgeParser";
+import { PropertyDeclContext } from "./ForgeParser";
 import { ConsistencyDeclContext } from "./ForgeParser";
 import { TestSuiteDeclContext } from "./ForgeParser";
 import { TestConstructContext } from "./ForgeParser";
@@ -266,18 +266,18 @@ export interface ForgeVisitor<Result> extends ParseTreeVisitor<Result> {
 	visitSatisfiabilityDecl?: (ctx: SatisfiabilityDeclContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `ForgeParser.propertyDecl`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitPropertyDecl?: (ctx: PropertyDeclContext) => Result;
-
-	/**
 	 * Visit a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	visitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `ForgeParser.propertyDecl`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitPropertyDecl?: (ctx: PropertyDeclContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `ForgeParser.consistencyDecl`.

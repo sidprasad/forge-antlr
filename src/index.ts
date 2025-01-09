@@ -75,4 +75,8 @@ export class ForgeUtil {
 	getFunctions() {
 		return this.forgeListener.functions;
 	}
+
+	getConsistencyAssertions() {
+		return this.forgeListener.consistencyAssertions;
+	}
 }

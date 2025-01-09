@@ -27,8 +27,8 @@ import { ScopeContext } from "./ForgeParser";
 import { TypescopeContext } from "./ForgeParser";
 import { ConstContext } from "./ForgeParser";
 import { SatisfiabilityDeclContext } from "./ForgeParser";
-import { PropertyDeclContext } from "./ForgeParser";
 import { QuantifiedPropertyDeclContext } from "./ForgeParser";
+import { PropertyDeclContext } from "./ForgeParser";
 import { ConsistencyDeclContext } from "./ForgeParser";
 import { TestSuiteDeclContext } from "./ForgeParser";
 import { TestConstructContext } from "./ForgeParser";
@@ -359,17 +359,6 @@ export interface ForgeListener extends ParseTreeListener {
 	exitSatisfiabilityDecl?: (ctx: SatisfiabilityDeclContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `ForgeParser.propertyDecl`.
-	 * @param ctx the parse tree
-	 */
-	enterPropertyDecl?: (ctx: PropertyDeclContext) => void;
-	/**
-	 * Exit a parse tree produced by `ForgeParser.propertyDecl`.
-	 * @param ctx the parse tree
-	 */
-	exitPropertyDecl?: (ctx: PropertyDeclContext) => void;
-
-	/**
 	 * Enter a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
 	 * @param ctx the parse tree
 	 */
@@ -379,6 +368,17 @@ export interface ForgeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `ForgeParser.propertyDecl`.
+	 * @param ctx the parse tree
+	 */
+	enterPropertyDecl?: (ctx: PropertyDeclContext) => void;
+	/**
+	 * Exit a parse tree produced by `ForgeParser.propertyDecl`.
+	 * @param ctx the parse tree
+	 */
+	exitPropertyDecl?: (ctx: PropertyDeclContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ForgeParser.consistencyDecl`.

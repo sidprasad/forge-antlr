@@ -499,8 +499,6 @@ export class ForgeListenerImpl implements ForgeListener {
     }
 
 
-
-
     /**
      * Exit a parse tree produced by `ForgeParser.name`.
      * @param ctx the parse tree

@@ -56,10 +56,13 @@ describe('ForgeUtil', () => {
         expect(examples.length).toBe(2);
 
         let assertions = forgeUtil.getAssertions();
-        expect(assertions.length).toBe(2);
+        expect(assertions.length).toBe(3);
 
         let quantifiedAssertions = forgeUtil.getQuantifiedAssertions();
-        expect(quantifiedAssertions.length).toBe(3);
+        expect(quantifiedAssertions.length).toBe(2);
+
+        let consistencyAssertions = forgeUtil.getConsistencyAssertions();
+        expect(consistencyAssertions.length).toBe(2);
     });
 
 });

@@ -46,11 +46,17 @@ pred sameNumber [x : Int, y : Int] {
 test suite for isDirectedTree {
     assert isDirectedTree is necessary for isDirectedTree
     assert {isDirectedTree} is sufficient for isDirectedTree
+
+    // This will now be parsed as an ASSERTION
+    // rather than a quantified assertion, and I think that
+    // is fine.
+    assert (all r1, r2 : Node | isDirectedTree) is sufficient for isDirectedTree
+
 }
 
 
 //// QUANTIFIED ASSERTIONS //////
-assert all r1, r2 : Node | isDirectedTree is sufficient for isDirectedTree
+
 // Allow multiple quantifications + check scopes
 assert all r : NonNode, r1 : Node | isDirectedTree is necessary for isRoot[r1] for 1 Node, 1 NonNode
 // Ensure disj works
@@ -79,3 +85,6 @@ example e1 is {isDirectedTree} for {
 example e2 is { isDirectedTree && isRoot[Node] } for {
     no Node
 }
+
+assert (no Node) is consistent with isDirectedTree
+assert (no Node) is inconsistent with isDirectedTree // This should fail as a test, but is a valid test
