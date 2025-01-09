@@ -45,7 +45,7 @@ pred sameNumber [x : Int, y : Int] {
 ///// JUST ASSERTIONS //////
 test suite for isDirectedTree {
     assert isDirectedTree is necessary for isDirectedTree
-    assert isDirectedTree is sufficient for isDirectedTree
+    assert {isDirectedTree} is sufficient for isDirectedTree
 }
 
 
