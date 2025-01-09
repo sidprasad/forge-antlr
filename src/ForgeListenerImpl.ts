@@ -4,7 +4,7 @@ import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
 import {ParserRuleContext} from 'antlr4ts/ParserRuleContext';
 
-import { AlloyModuleContext } from "./ForgeParser";
+import { AlloyModuleContext, ConsistencyDeclContext } from "./ForgeParser";
 import { ImportDeclContext } from "./ForgeParser";
 import { ParagraphContext } from "./ForgeParser";
 import { SigDeclContext } from "./ForgeParser";
@@ -88,7 +88,7 @@ import { BindRHSUnionContext } from "./ForgeParser";
 import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
-import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest } from './ForgeSyntaxConstructs';
+import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
 
 
 /*
@@ -145,6 +145,8 @@ function getLocationOnlyBlock(ctx : ParserRuleContext) : Block {
 /*
     TODO: Rename this to a listener for TOADUS PONENS
 
+
+    TODO: Update this to implement the NEW assertions.
 */
 export class ForgeListenerImpl implements ForgeListener {
 
@@ -157,6 +159,7 @@ export class ForgeListenerImpl implements ForgeListener {
     private _quantifiedAssertions : QuantifiedAssertionTest[] = [];
     private _satisfiabilityAssertions : SatisfiabilityAssertionTest[] = [];
     private _functions : Function[] = [];
+    private _consistencyAssertions : ConsistencyAssertionTest[] = [];
 
     public get sigs() : Sig[] {
         return this._sigs;
@@ -484,6 +487,53 @@ export class ForgeListenerImpl implements ForgeListener {
             propArgsBlock
         );
         this._quantifiedAssertions.push(qa);
+    }
+
+
+    /**
+     * Exit a parse tree produced by `ForgeParser.consistencyDecl`.
+     * @param ctx the parse tree
+     */
+    exitConsistencyDecl? (ctx: ConsistencyDeclContext) {
+
+        // ALWAYS OF THE FORM pred => prop
+
+
+        // TODO: FILL
+
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+        
+        // // First get if necessary or sufficient
+        // const rel = ctx.SUFFICIENT_TOK() ? "sufficient"
+        //             : ctx.NECESSARY_TOK() ? "necessary"
+        //             : "unknown";
+        
+        // // Assert that the relation is necessary or sufficient
+        // if (rel === "unknown") {
+        //     throw new Error("Property relation must be either necessary or sufficient.");
+        // }
+
+        // let predIndex = (rel === "sufficient") ? 0 : 1;
+        // let propIndex = (rel === "sufficient") ? 1 : 0;
+
+        // const predName = ctx.name(predIndex).text;
+        // const propName = ctx.name(propIndex).text;
+
+        // const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        // const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+
+        // const at = new AssertionTest(
+        //     startLine, 
+        //     startColumn, 
+        //     endLine, 
+        //     endColumn,
+        //     predName,
+        //     propName,
+        //     rel,
+        //     testBounds,
+        //     testScope
+        // );
+        // this._assertions.push(at);
     }
 
 
