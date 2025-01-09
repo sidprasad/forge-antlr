@@ -466,40 +466,36 @@ export class ForgeListenerImpl implements ForgeListener {
 
 
         // TODO: FILL
-
         const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
         
-        // // First get if necessary or sufficient
-        // const rel = ctx.SUFFICIENT_TOK() ? "sufficient"
-        //             : ctx.NECESSARY_TOK() ? "necessary"
-        //             : "unknown";
-        
-        // // Assert that the relation is necessary or sufficient
-        // if (rel === "unknown") {
-        //     throw new Error("Property relation must be either necessary or sufficient.");
-        // }
+        let consistencyType = ctx.CONSISTENT_TOK() ? "consistent" :
+                            ctx.INCONSISTENT_TOK() ? "inconsistent" :
+                            "unknown";
 
-        // let predIndex = (rel === "sufficient") ? 0 : 1;
-        // let propIndex = (rel === "sufficient") ? 1 : 0;
+        if (consistencyType === "unknown") {
+            throw new Error("Consistency assertion relation must be either consistent or inconsistent.");
+        }
 
-        // const predName = ctx.name(predIndex).text;
-        // const propName = ctx.name(propIndex).text;
+        let consistent = (consistencyType === "consistent") ? true : false;
 
-        // const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
-        // const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+        const predName = ctx.name().text;
+        const expr = getLocationOnlyExpr(ctx.expr());
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
 
-        // const at = new AssertionTest(
-        //     startLine, 
-        //     startColumn, 
-        //     endLine, 
-        //     endColumn,
-        //     predName,
-        //     propName,
-        //     rel,
-        //     testBounds,
-        //     testScope
-        // );
-        // this._assertions.push(at);
+        const ct = new ConsistencyAssertionTest(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            predName,
+            expr,
+            consistent,
+            testBounds,
+            testScope
+        );
+
+        this._consistencyAssertions.push(ct);
     }
 
 
