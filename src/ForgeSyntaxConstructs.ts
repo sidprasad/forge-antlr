@@ -113,7 +113,7 @@ class AssertionTest extends SyntaxNode {
 		endRow: number,
 		endColumn: number,
 		public pred: string,
-		public prop: string,
+		public prop: Expr,
 		public check : string,
 		public bounds? : string,
 		public scope? : string
@@ -129,14 +129,13 @@ class QuantifiedAssertionTest extends SyntaxNode {
 		endRow: number,
 		endColumn: number,
 		public pred: string,
-		public prop: string,
+		public prop: Expr,
 		public check : string,
 		public disj? : boolean,
 		public quantDecls? : Block,
 		public bounds? : string,
 		public scope? : string,
-		public predArgs?: Block,
-		public propArgs?: Block
+		public predArgs?: Block
 	) {
 		super(startRow, startColumn, endRow, endColumn);
 	}
@@ -179,6 +178,8 @@ class Function extends SyntaxNode {
 
 
 }
+
+
 class SatisfiabilityAssertionTest extends SyntaxNode {
 
 	constructor(
@@ -186,8 +187,25 @@ class SatisfiabilityAssertionTest extends SyntaxNode {
 		startColumn: number,
 		endRow: number,
 		endColumn: number,
-		public name: string,
+		public exp: Expr,
 		public check : string,
+		public bounds? : string,
+		public scope? : string
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+}
+
+class ConsistencyAssertionTest extends SyntaxNode {
+
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public pred: string,
+		public prop: Expr,
+		public consistent : boolean,
 		public bounds? : string,
 		public scope? : string
 	) {
@@ -199,5 +217,7 @@ export {
 		Block,
 		Sig, Predicate, Function, 
 		Test, AssertionTest, QuantifiedAssertionTest, Example, SatisfiabilityAssertionTest,
+		ConsistencyAssertionTest,
+		Expr
 		//Formula, Expr // THese ones are not used for now
 };

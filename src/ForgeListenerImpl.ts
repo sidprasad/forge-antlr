@@ -4,7 +4,7 @@ import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
 import {ParserRuleContext} from 'antlr4ts/ParserRuleContext';
 
-import { AlloyModuleContext } from "./ForgeParser";
+import { AlloyModuleContext, ConsistencyDeclContext } from "./ForgeParser";
 import { ImportDeclContext } from "./ForgeParser";
 import { ParagraphContext } from "./ForgeParser";
 import { SigDeclContext } from "./ForgeParser";
@@ -88,7 +88,9 @@ import { BindRHSUnionContext } from "./ForgeParser";
 import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
-import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, QuantifiedAssertionTest, SatisfiabilityAssertionTest } from './ForgeSyntaxConstructs';
+import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, 
+        Expr, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
+import { Parser } from 'antlr4ts';
 
 
 /*
@@ -142,9 +144,19 @@ function getLocationOnlyBlock(ctx : ParserRuleContext) : Block {
     return block;
 }
 
+
+function getLocationOnlyExpr(ctx: ParserRuleContext) : Expr {
+    const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+    const expr = new Expr(startLine, startColumn, endLine, endColumn, "");
+    return expr;
+}
+
+
 /*
     TODO: Rename this to a listener for TOADUS PONENS
 
+
+    TODO: Update this to implement the NEW assertions.
 */
 export class ForgeListenerImpl implements ForgeListener {
 
@@ -157,6 +169,7 @@ export class ForgeListenerImpl implements ForgeListener {
     private _quantifiedAssertions : QuantifiedAssertionTest[] = [];
     private _satisfiabilityAssertions : SatisfiabilityAssertionTest[] = [];
     private _functions : Function[] = [];
+    private _consistencyAssertions : ConsistencyAssertionTest[] = [];
 
     public get sigs() : Sig[] {
         return this._sigs;
@@ -191,6 +204,9 @@ export class ForgeListenerImpl implements ForgeListener {
         return this._functions;
     }
 
+    public get consistencyAssertions() : ConsistencyAssertionTest[] {
+        return this._consistencyAssertions;
+    }
 
     /**
      * Exit a parse tree produced by `ForgeParser.sigDecl`.
@@ -295,7 +311,8 @@ export class ForgeListenerImpl implements ForgeListener {
         const check = ctx.SAT_TOK() ? "sat" : 
                         ctx.UNSAT_TOK() ? "unsat" :
                         ctx.THEOREM_TOK() ? "theorem" :
-                        ctx.FORGE_ERROR_TOK() ? "forge_error" : "unknown";
+                        ctx.FORGE_ERROR_TOK() ? "forge_error" : 
+                        ctx.CHECKED_TOK() ? "checked" : "unknown";
 
         let t = new Test(
             startLine, 
@@ -319,7 +336,8 @@ export class ForgeListenerImpl implements ForgeListener {
     exitSatisfiabilityDecl? (ctx: SatisfiabilityDeclContext) {
         const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
 
-        const predName = ctx.name().text;
+        const expr = getLocationOnlyExpr(ctx.expr());
+
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
         const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
         
@@ -333,7 +351,7 @@ export class ForgeListenerImpl implements ForgeListener {
             startColumn, 
             endLine, 
             endColumn,
-            predName,
+            expr,
             check,
             testBounds,
             testScope
@@ -348,7 +366,6 @@ export class ForgeListenerImpl implements ForgeListener {
     exitPropertyDecl? (ctx: PropertyDeclContext) {
 
         // ALWAYS OF THE FORM pred => prop
-
         const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
         
         // First get if necessary or sufficient
@@ -361,11 +378,9 @@ export class ForgeListenerImpl implements ForgeListener {
             throw new Error("Property relation must be either necessary or sufficient.");
         }
 
-        let predIndex = (rel === "sufficient") ? 0 : 1;
-        let propIndex = (rel === "sufficient") ? 1 : 0;
+        const expr = getLocationOnlyExpr(ctx.expr());
+        const predName = ctx.name().text;
 
-        const predName = ctx.name(predIndex).text;
-        const propName = ctx.name(propIndex).text;
 
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
         const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
@@ -376,7 +391,7 @@ export class ForgeListenerImpl implements ForgeListener {
             endLine, 
             endColumn,
             predName,
-            propName,
+            expr,
             rel,
             testBounds,
             testScope
@@ -410,56 +425,11 @@ export class ForgeListenerImpl implements ForgeListener {
         let predIndex = (rel === "sufficient") ? 0 : 1;
         let propIndex = (rel === "sufficient") ? 1 : 0;
 
-        const predName = ctx.name(predIndex).text;
-        const propName = ctx.name(propIndex).text;
+        const predName = ctx.name().text;
+        const expr = getLocationOnlyExpr(ctx.expr());
 
         let argsT = ctx.exprList();
-        let predArgsBlock : Block | undefined = undefined;
-        let propArgsBlock : Block | undefined = undefined;
-
-        // TODO: This is a bit hacky, but it will do for now.
-        if (argsT.length > 0) {
-
-            // First get the location of the predicate and the property names.
-            // Then get the location of the arguments.
-            // Then correlate them.
-            let argsBlocks = argsT.map((args) => getLocationOnlyBlock(args));
-
-            // Get the location of the predicate and the property names.
-            let predNameBlock = getLocationOnlyBlock(ctx.name(predIndex));
-            let propNameBlock = getLocationOnlyBlock(ctx.name(propIndex));
-
-            argsBlocks.push(predNameBlock);
-            argsBlocks.push(propNameBlock);
-            orderBlocksByStart(argsBlocks);
-
-            // Get the index of prednameBlock and propNameBlock
-            let predNameBlockIndex = argsBlocks.indexOf(predNameBlock);
-            let propNameBlockIndex = argsBlocks.indexOf(propNameBlock);
-
-            // The first block after predNameBlock that is not propNameBlock is the predicate args (if it exists).
-            // The first block after propNameBlock that is not predNameBlock is the property args (if it exists).
-            let predArgsBlockIndex = predNameBlockIndex + 1;
-            let propArgsBlockIndex = propNameBlockIndex + 1;
-
-            if ((predArgsBlockIndex != propNameBlockIndex)
-                && (predArgsBlockIndex < argsBlocks.length)) {
-                predArgsBlock = argsBlocks[predArgsBlockIndex];
-            }
-
-            if ((propArgsBlockIndex != predNameBlockIndex)
-                && (propArgsBlockIndex < argsBlocks.length)) {
-                propArgsBlock = argsBlocks[propArgsBlockIndex];
-            }
-        
-            for (let i = 0; i < argsBlocks.length; i++) {
-                if (argsBlocks[i] === predNameBlock) {
-                    predArgsBlockIndex = i + 1;
-                } else if (argsBlocks[i] === propNameBlock) {
-                    propArgsBlockIndex = i + 1;
-                }
-            }
-        }
+        let predArgsBlock : Block | undefined = (argsT) ? getLocationOnlyBlock(argsT) : undefined;
 
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
         const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
@@ -474,19 +444,59 @@ export class ForgeListenerImpl implements ForgeListener {
             endLine, 
             endColumn,
             predName,
-            propName,
+            expr,
             rel,
             disj,
             quantDeclsBlock,
             testBounds,
             testScope,
-            predArgsBlock,
-            propArgsBlock
+            predArgsBlock
         );
         this._quantifiedAssertions.push(qa);
     }
 
 
+    /**
+     * Exit a parse tree produced by `ForgeParser.consistencyDecl`.
+     * @param ctx the parse tree
+     */
+    exitConsistencyDecl? (ctx: ConsistencyDeclContext) {
+
+        // ALWAYS OF THE FORM pred => prop
+
+
+        // TODO: FILL
+        const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
+        
+        let consistencyType = ctx.CONSISTENT_TOK() ? "consistent" :
+                            ctx.INCONSISTENT_TOK() ? "inconsistent" :
+                            "unknown";
+
+        if (consistencyType === "unknown") {
+            throw new Error("Consistency assertion relation must be either consistent or inconsistent.");
+        }
+
+        let consistent = (consistencyType === "consistent") ? true : false;
+
+        const predName = ctx.name().text;
+        const expr = getLocationOnlyExpr(ctx.expr());
+        const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
+        const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
+
+        const ct = new ConsistencyAssertionTest(
+            startLine, 
+            startColumn, 
+            endLine, 
+            endColumn,
+            predName,
+            expr,
+            consistent,
+            testBounds,
+            testScope
+        );
+
+        this._consistencyAssertions.push(ct);
+    }
 
 
     /**

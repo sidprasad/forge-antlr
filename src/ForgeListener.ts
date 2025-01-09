@@ -27,8 +27,9 @@ import { ScopeContext } from "./ForgeParser";
 import { TypescopeContext } from "./ForgeParser";
 import { ConstContext } from "./ForgeParser";
 import { SatisfiabilityDeclContext } from "./ForgeParser";
-import { PropertyDeclContext } from "./ForgeParser";
 import { QuantifiedPropertyDeclContext } from "./ForgeParser";
+import { PropertyDeclContext } from "./ForgeParser";
+import { ConsistencyDeclContext } from "./ForgeParser";
 import { TestSuiteDeclContext } from "./ForgeParser";
 import { TestConstructContext } from "./ForgeParser";
 import { ArrowOpContext } from "./ForgeParser";
@@ -358,6 +359,17 @@ export interface ForgeListener extends ParseTreeListener {
 	exitSatisfiabilityDecl?: (ctx: SatisfiabilityDeclContext) => void;
 
 	/**
+	 * Enter a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
+	 * @param ctx the parse tree
+	 */
+	enterQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+	/**
+	 * Exit a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
+	 * @param ctx the parse tree
+	 */
+	exitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+
+	/**
 	 * Enter a parse tree produced by `ForgeParser.propertyDecl`.
 	 * @param ctx the parse tree
 	 */
@@ -369,15 +381,15 @@ export interface ForgeListener extends ParseTreeListener {
 	exitPropertyDecl?: (ctx: PropertyDeclContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
+	 * Enter a parse tree produced by `ForgeParser.consistencyDecl`.
 	 * @param ctx the parse tree
 	 */
-	enterQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+	enterConsistencyDecl?: (ctx: ConsistencyDeclContext) => void;
 	/**
-	 * Exit a parse tree produced by `ForgeParser.quantifiedPropertyDecl`.
+	 * Exit a parse tree produced by `ForgeParser.consistencyDecl`.
 	 * @param ctx the parse tree
 	 */
-	exitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+	exitConsistencyDecl?: (ctx: ConsistencyDeclContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ForgeParser.testSuiteDecl`.
