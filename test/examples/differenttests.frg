@@ -72,6 +72,7 @@ test expect {
     t1: {isDirectedTree} is sat
     t2 : {isDirectedTree and !isDirectedTree} is unsat
     t3 : {all n : Node | isRoot[n]} is theorem // Should not pass but is a valid test.
+    t4 : {all n : Node | isRoot[n]} is checked // Should not pass but is a valid test.
 }
 
 

@@ -50,7 +50,7 @@ describe('ForgeUtil', () => {
         forgeUtil.processSpec();
         
         let tests = forgeUtil.getTests();
-        expect(tests.length).toBe(3);
+        expect(tests.length).toBe(4);
 
         let examples = forgeUtil.getExamples();
         expect(examples.length).toBe(2);
