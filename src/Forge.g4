@@ -40,9 +40,9 @@ scope: FOR_TOK number (BUT_TOK typescopeList)? | FOR_TOK typescopeList;
 typescope: EXACTLY_TOK? number qualName;
 const: NONE_TOK | UNIV_TOK | IDEN_TOK | MINUS_TOK? number;
 
-satisfiabilityDecl: ASSERT_TOK name IS_TOK (SAT_TOK | UNSAT_TOK | FORGE_ERROR_TOK) scope? (FOR_TOK bounds)?;
-propertyDecl: ASSERT_TOK name IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
-quantifiedPropertyDecl: ASSERT_TOK ALL_TOK DISJ_TOK? quantDeclList BAR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? scope? (FOR_TOK bounds)?;
+satisfiabilityDecl: ASSERT_TOK expr IS_TOK (SAT_TOK | UNSAT_TOK | FORGE_ERROR_TOK) scope? (FOR_TOK bounds)?;
+propertyDecl: ASSERT_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
+quantifiedPropertyDecl: ASSERT_TOK ALL_TOK DISJ_TOK? quantDeclList BAR_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? scope? (FOR_TOK bounds)?;
 
 testSuiteDecl: TEST_TOK SUITE_TOK FOR_TOK name LEFT_CURLY_TOK testConstruct* RIGHT_CURLY_TOK;
 
