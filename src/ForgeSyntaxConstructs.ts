@@ -217,6 +217,7 @@ export {
 		Block,
 		Sig, Predicate, Function, 
 		Test, AssertionTest, QuantifiedAssertionTest, Example, SatisfiabilityAssertionTest,
-		ConsistencyAssertionTest
+		ConsistencyAssertionTest,
+		Expr
 		//Formula, Expr // THese ones are not used for now
 };
