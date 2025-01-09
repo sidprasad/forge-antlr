@@ -29,6 +29,7 @@ import { ConstContext } from "./ForgeParser";
 import { SatisfiabilityDeclContext } from "./ForgeParser";
 import { PropertyDeclContext } from "./ForgeParser";
 import { QuantifiedPropertyDeclContext } from "./ForgeParser";
+import { ConsistencyDeclContext } from "./ForgeParser";
 import { TestSuiteDeclContext } from "./ForgeParser";
 import { TestConstructContext } from "./ForgeParser";
 import { ArrowOpContext } from "./ForgeParser";
@@ -378,6 +379,17 @@ export interface ForgeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitQuantifiedPropertyDecl?: (ctx: QuantifiedPropertyDeclContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `ForgeParser.consistencyDecl`.
+	 * @param ctx the parse tree
+	 */
+	enterConsistencyDecl?: (ctx: ConsistencyDeclContext) => void;
+	/**
+	 * Exit a parse tree produced by `ForgeParser.consistencyDecl`.
+	 * @param ctx the parse tree
+	 */
+	exitConsistencyDecl?: (ctx: ConsistencyDeclContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ForgeParser.testSuiteDecl`.
