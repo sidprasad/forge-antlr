@@ -2,6 +2,37 @@ import { ForgeUtil } from "../src";
 import * as fs from 'fs';
 import * as path from 'path';
 
+
+
+
+function get_text_block(fromRow: number, toRow: number, fromColumn: number, toColumn: number, text: string): string {
+	let lines = text.split("\n");
+	let block = "";
+	const sameRow = fromRow == toRow;
+	for (let i = fromRow; i <= toRow; i++) {
+		let line = lines[i - 1];
+		if (i == fromRow) {
+			if (sameRow) {
+				block += line.substring(fromColumn - 1, toColumn + 1);  // TODO: THis weems wrong right?
+			}
+			else {
+				block += line.substring(fromColumn - 1);
+			}
+		} else if (i == toRow) {
+			block += line.substring(0, toColumn + 1); // DO WE NEED TO ADD 1?
+		} else {
+			block += line;
+		}
+
+        if(i < toRow) {
+		    block += "\n";
+        }
+	}
+	return block;
+}
+
+
+
 describe('ForgeUtil', () => {
     it(' can parse SIGS.', () => {
         // Construct the path to the Forge file relative to the current directory
@@ -63,6 +94,33 @@ describe('ForgeUtil', () => {
 
         let consistencyAssertions = forgeUtil.getConsistencyAssertions();
         expect(consistencyAssertions.length).toBe(2);
+    });
+
+    it (' canparse examples.',  () => {
+        // Construct the path to the Forge file relative to the current directory
+    const forgeFilePath = path.join(__dirname, 'examples', 'exampleTests.frg');
+    const forgeSpec = fs.readFileSync(forgeFilePath, 'utf8');
+    const forgeUtil = new ForgeUtil(forgeSpec);
+    forgeUtil.processSpec();
+    
+    let tests = forgeUtil.getTests();
+    expect(tests.length).toBe(0);
+
+    let examples = forgeUtil.getExamples();
+    expect(examples.length).toBe(1);
+    
+
+        let fromCol = examples[0].startColumn;
+        let fromRow = examples[0].startRow;
+        let toCol = examples[0].endColumn
+        let toRow = examples[0].endRow;
+        let exampleBlock = get_text_block(fromRow, toRow, fromCol, toCol, forgeSpec);
+
+        let testExpr = examples[0].testExpr;
+        let testExprBlock = get_text_block(testExpr.startRow, testExpr.endRow, testExpr.startColumn, testExpr.endColumn, forgeSpec).trim();
+
+        expect(testExprBlock).toBe("{not isDirectedTree}");
+
     });
 
 });
