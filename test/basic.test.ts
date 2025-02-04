@@ -96,7 +96,7 @@ describe('ForgeUtil', () => {
         expect(consistencyAssertions.length).toBe(2);
     });
 
-    it (' canparse examples.',  () => {
+    it (' can parse examples.',  () => {
         // Construct the path to the Forge file relative to the current directory
     const forgeFilePath = path.join(__dirname, 'examples', 'exampleTests.frg');
     const forgeSpec = fs.readFileSync(forgeFilePath, 'utf8');
@@ -123,4 +123,19 @@ describe('ForgeUtil', () => {
 
     });
 
+    it (' can parse functions.',  () => {
+    // Construct the path to the Forge file relative to the current directory
+    const forgeFilePath = path.join(__dirname, 'examples', 'bst.frg');
+    const forgeSpec = fs.readFileSync(forgeFilePath, 'utf8');
+    const forgeUtil = new ForgeUtil(forgeSpec);
+    forgeUtil.processSpec();
+    
+    // Expect 1 function, 3 predicates
+    let functions = forgeUtil.getFunctions();
+    let predicates = forgeUtil.getPreds();
+
+    expect(functions.length).toBe(1);
+    expect(predicates.length).toBe(3);
+
+    });
 });

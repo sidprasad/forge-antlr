@@ -89,7 +89,7 @@ import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
 import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, 
-        Expr, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
+    Function,   Expr, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
 import { Parser } from 'antlr4ts';
 
 
