@@ -336,6 +336,9 @@ export class ForgeListenerImpl implements ForgeListener {
     exitSatisfiabilityDecl? (ctx: SatisfiabilityDeclContext) {
         const {startLine, startColumn, endLine, endColumn} = getLocations(ctx);
 
+
+        const testName = ctx.name()?.IDENTIFIER_TOK().text; // May be undefined.
+
         const expr = getLocationOnlyExpr(ctx.expr());
 
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
@@ -379,7 +382,16 @@ export class ForgeListenerImpl implements ForgeListener {
         }
 
         const expr = getLocationOnlyExpr(ctx.expr());
-        const predName = ctx.name().text;
+
+        // UGLY!!!!
+        let potentialNames = ctx.name();
+
+        var predName = ctx.name()[0].text;
+        var testName = undefined;
+        if (potentialNames.length == 2) {
+            predName = ctx.name()[1].text;   
+            testName = ctx.name()[0].text;
+        }
 
 
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
@@ -425,7 +437,18 @@ export class ForgeListenerImpl implements ForgeListener {
         let predIndex = (rel === "sufficient") ? 0 : 1;
         let propIndex = (rel === "sufficient") ? 1 : 0;
 
-        const predName = ctx.name().text;
+
+        // UGLY!!!!
+        let potentialNames = ctx.name();
+
+        var predName = ctx.name()[0].text;
+        var testName = undefined;
+        if (potentialNames.length == 2) {
+            predName = ctx.name()[1].text;   
+            testName = ctx.name()[0].text;
+        }
+
+
         const expr = getLocationOnlyExpr(ctx.expr());
 
         let argsT = ctx.exprList();
@@ -478,7 +501,17 @@ export class ForgeListenerImpl implements ForgeListener {
 
         let consistent = (consistencyType === "consistent") ? true : false;
 
-        const predName = ctx.name().text;
+        // UGLY!!!!
+        let potentialNames = ctx.name();
+
+        var predName = ctx.name()[0].text;
+        var testName = undefined;
+        if (potentialNames.length == 2) {
+            predName = ctx.name()[1].text;   
+            testName = ctx.name()[0].text;
+        }
+        
+
         const expr = getLocationOnlyExpr(ctx.expr());
         const testScope = ctx.scope()?.toStringTree(); // This is not ideal, but will do for now.
         const testBounds = ctx.bounds()?.toStringTree(); // This is not ideal, but will do for now.
