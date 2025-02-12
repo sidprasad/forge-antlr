@@ -1,6 +1,6 @@
 {
   "name": "forge-toadus-parser",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "Typescript parser/listener for Toadus Ponens/Forge",
   "main": "dist/index.js",
   "scripts": {
