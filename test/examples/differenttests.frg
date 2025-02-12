@@ -87,5 +87,5 @@ example e2 is { isDirectedTree && isRoot[Node] } for {
     no Node
 }
 
-assert (no Node) is consistent with isDirectedTree
+assertname: assert (no Node) is consistent with isDirectedTree
 assert (no Node) is inconsistent with isDirectedTree // This should fail as a test, but is a valid test

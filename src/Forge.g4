@@ -42,10 +42,10 @@ const: NONE_TOK | UNIV_TOK | IDEN_TOK | MINUS_TOK? number;
 
 // TODO: ERROR: WE ARE PARSING SOME QUANTIFIED PROPERTY DECL AS PROPERTYDECL 
 
-satisfiabilityDecl: ASSERT_TOK expr IS_TOK (SAT_TOK | UNSAT_TOK | FORGE_ERROR_TOK) scope? (FOR_TOK bounds)?;
-quantifiedPropertyDecl: ASSERT_TOK ALL_TOK DISJ_TOK? quantDeclList BAR_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? scope? (FOR_TOK bounds)?;
-propertyDecl: ASSERT_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
-consistencyDecl: ASSERT_TOK expr IS_TOK (CONSISTENT_TOK | INCONSISTENT_TOK) WITH_TOK name scope? (FOR_TOK bounds)?;
+satisfiabilityDecl: (name COLON_TOK)? ASSERT_TOK expr IS_TOK (SAT_TOK | UNSAT_TOK | FORGE_ERROR_TOK) scope? (FOR_TOK bounds)?;
+quantifiedPropertyDecl: (name COLON_TOK)? ASSERT_TOK ALL_TOK DISJ_TOK? quantDeclList BAR_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name (LEFT_SQUARE_TOK exprList RIGHT_SQUARE_TOK)? scope? (FOR_TOK bounds)?;
+propertyDecl: (name COLON_TOK)? ASSERT_TOK expr IS_TOK (SUFFICIENT_TOK | NECESSARY_TOK) FOR_TOK name scope? (FOR_TOK bounds)?;
+consistencyDecl: (name COLON_TOK)? ASSERT_TOK expr IS_TOK (CONSISTENT_TOK | INCONSISTENT_TOK) WITH_TOK name scope? (FOR_TOK bounds)?;
 
 testSuiteDecl: TEST_TOK SUITE_TOK FOR_TOK name LEFT_CURLY_TOK testConstruct* RIGHT_CURLY_TOK;
 
