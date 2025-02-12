@@ -89,7 +89,7 @@ import { BindRHSProductContext } from "./ForgeParser";
 import { BindRHSProductBaseContext } from "./ForgeParser";
 
 import { SyntaxNode, Sig, Predicate, Test, Block, AssertionTest, Example, 
-        Expr, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
+    Function,   Expr, QuantifiedAssertionTest, SatisfiabilityAssertionTest, ConsistencyAssertionTest } from './ForgeSyntaxConstructs';
 import { Parser } from 'antlr4ts';
 
 
@@ -109,28 +109,14 @@ function getRandomName() : string {
 }
 
 
+function getLocations(ctx: ParserRuleContext): any {
+    const startLine = ctx.start.line;                 // This is 1 based line number
+    const startColumn = ctx.start.charPositionInLine; // This is 0 based offset
 
-function orderBlocksByStart(xs : Block[]) {
-
-    // Sort the blocks by startRow and startColumn
-    xs.sort((a, b) => {
-        if (a.startRow === b.startRow) {
-            return a.startColumn - b.startColumn;
-        } else {
-            return a.startRow - b.startRow;
-        }
-    });
-
-}
-
-
-
-function getLocations(ctx : ParserRuleContext) : any {
-    const startLine = ctx.start.line;
-    const startColumn = ctx.start.charPositionInLine;
     const endLine = ctx.stop ? ctx.stop.line : -1;
-    const endColumn =  ctx.stop ? ctx.stop.charPositionInLine : 0;
-    return {startLine, startColumn, endLine, endColumn};
+    const endColumn = ctx.stop ? ctx.stop.charPositionInLine + (ctx.stop.text?.length || 0) : 0;
+
+    return { startLine, startColumn, endLine, endColumn };
 }
 
 /**

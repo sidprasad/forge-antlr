@@ -50,12 +50,6 @@ export class ForgeUtil {
 		return this.forgeListener.tests;
 	}
 
-
-	// TODO: Implement this (should this include pfuncs?)
-	// getFunctions() {
-	// 	return this.forgeListener.functions;
-	// }
-
 	getAssertions() {
 		return this.forgeListener.assertions;
 	}
