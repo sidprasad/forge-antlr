@@ -13,6 +13,20 @@ export abstract class SyntaxNode {
     ) {}
 }
 
+abstract class TestSyntaxNode extends SyntaxNode {
+	constructor(
+		startRow: number,
+		startColumn: number,
+		endRow: number,
+		endColumn: number,
+		public name?: string
+	) {
+		super(startRow, startColumn, endRow, endColumn);
+	}
+}
+
+
+
 class Block extends SyntaxNode {
 	constructor(
 		startRow: number,
@@ -87,8 +101,12 @@ class Predicate extends SyntaxNode {
 }
 
 
+
+
+
+
 // TODO: Implement these
-class Test extends SyntaxNode {
+class Test extends TestSyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -102,10 +120,10 @@ class Test extends SyntaxNode {
 		public scope? : string
 
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 }
-class AssertionTest extends SyntaxNode {
+class AssertionTest extends TestSyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -116,12 +134,13 @@ class AssertionTest extends SyntaxNode {
 		public prop: Expr,
 		public check : string,
 		public bounds? : string,
-		public scope? : string
+		public scope? : string,
+		name?: string
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 }
-class QuantifiedAssertionTest extends SyntaxNode {
+class QuantifiedAssertionTest extends TestSyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -135,9 +154,10 @@ class QuantifiedAssertionTest extends SyntaxNode {
 		public quantDecls? : Block,
 		public bounds? : string,
 		public scope? : string,
-		public predArgs?: Block
+		public predArgs?: Block,
+		name?: string
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 
 
@@ -146,7 +166,7 @@ class QuantifiedAssertionTest extends SyntaxNode {
 
 
 
-class Example extends SyntaxNode {
+class Example extends TestSyntaxNode {
 	constructor(
 		startRow: number,
 		startColumn: number,
@@ -156,7 +176,7 @@ class Example extends SyntaxNode {
 		public testExpr : Block,
 		public bounds : Block,
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 
 
@@ -180,7 +200,7 @@ class Function extends SyntaxNode {
 }
 
 
-class SatisfiabilityAssertionTest extends SyntaxNode {
+class SatisfiabilityAssertionTest extends TestSyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -190,13 +210,14 @@ class SatisfiabilityAssertionTest extends SyntaxNode {
 		public exp: Expr,
 		public check : string,
 		public bounds? : string,
-		public scope? : string
+		public scope? : string,
+		name?: string
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 }
 
-class ConsistencyAssertionTest extends SyntaxNode {
+class ConsistencyAssertionTest extends TestSyntaxNode {
 
 	constructor(
 		startRow: number,
@@ -207,9 +228,10 @@ class ConsistencyAssertionTest extends SyntaxNode {
 		public prop: Expr,
 		public consistent : boolean,
 		public bounds? : string,
-		public scope? : string
+		public scope? : string,
+		name?: string
 	) {
-		super(startRow, startColumn, endRow, endColumn);
+		super(startRow, startColumn, endRow, endColumn, name);
 	}
 }
 

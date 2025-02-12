@@ -343,7 +343,8 @@ export class ForgeListenerImpl implements ForgeListener {
             expr,
             check,
             testBounds,
-            testScope
+            testScope,
+            testName
         );
         this._satisfiabilityAssertions.push(st);
     }
@@ -392,7 +393,8 @@ export class ForgeListenerImpl implements ForgeListener {
             expr,
             rel,
             testBounds,
-            testScope
+            testScope,
+            testName
         );
         this._assertions.push(at);
     }
@@ -459,7 +461,8 @@ export class ForgeListenerImpl implements ForgeListener {
             quantDeclsBlock,
             testBounds,
             testScope,
-            predArgsBlock
+            predArgsBlock,
+            testName
         );
         this._quantifiedAssertions.push(qa);
     }
@@ -511,7 +514,8 @@ export class ForgeListenerImpl implements ForgeListener {
             expr,
             consistent,
             testBounds,
-            testScope
+            testScope,
+            testName
         );
 
         this._consistencyAssertions.push(ct);
